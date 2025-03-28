@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>VIP解析播放</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    const urlParams = new URLSearchParams(location.search);
+    const targetUrl = urlParams.get("url");
+    if (!targetUrl) {
+      document.body.innerHTML = "<p style='color:white;text-align:center;'>请在URL中附带 ?url=视频地址</p>";
+      throw new Error("无视频地址");
+    }
+
+    function chooseParser(url) {
+      if (/iqiyi\.com/.test(url)) {
+        return "https://api.jiexi.la/?url=";
+      } else if (/v\.qq\.com/.test(url)) {
+        return "https://jx.playerjy.com/?url=";
+      } else if (/youku\.com/.test(url)) {
+        return "https://www.8090g.cn/?url=";
+      } else if (/mgtv\.com/.test(url)) {
+        return "https://www.playm3u8.cn/jiexi.php?url=";
+      } else {
+        return "https://jx.playerjy.com/?url=";
+      }
+    }
+
+    const parser = chooseParser(targetUrl);
+    const finalUrl = parser + encodeURIComponent(targetUrl);
+
+    const iframe = document.createElement("iframe");
+    iframe.src = finalUrl;
+    document.body.appendChild(iframe);
+  </script>
+</body>
+</html>
